@@ -1,0 +1,335 @@
+<!--
+Zapisz jako plik .html (np. "kieszonkowe_na_czas.html").
+Obok pliku umieść swoje tło i nazwij je: grid.png
+-->
+
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kieszonkowe NaCzas</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --navy-1: #0b3d91;
+      --navy-2: #05205a;
+      --card-bg: rgba(255,255,255,0.88);
+      --muted: #586074;
+      --radius:16px;
+      --gap:16px;
+      --title-red: #e11d48;
+      --green: #16a34a;
+      --yellow: #f59e0b;
+      --red: #dc2626;
+    }
+
+    html,body{height:100%;margin:0;}
+    body{
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background-image: url("grid.png"); /* umieść grid.png obok HTML */
+      background-repeat: repeat;
+      background-size: 48px 48px;
+      background-attachment: fixed;
+      -webkit-font-smoothing:antialiased;
+      color:#07203b;
+      padding:20px;
+      box-sizing:border-box;
+    }
+
+    .bg-decor{
+      position:fixed;
+      left:50%;
+      top:8%;
+      transform:translateX(-50%);
+      pointer-events:none;
+      z-index:0;
+      filter: blur(36px) saturate(120%);
+      opacity:0.12;
+    }
+    .bg-decor svg{ width:720px; height:240px; }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width:920px;
+      margin:0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:var(--gap);
+    }
+
+    .title-wrap{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding:6px 8px;
+    }
+    h1.title{
+      margin:0;
+      font-family:"Great Vibes", Georgia, serif;
+      font-size: clamp(36px, 8vw, 72px);
+      line-height:1;
+      color: var(--title-red); /* czerwony napis */
+      text-shadow: 0 6px 12px rgba(0,0,0,0.06);
+      letter-spacing: 0.6px;
+      display:inline-block;
+    }
+    .title-badge{
+      font-size:13px;
+      color:var(--muted);
+      background: linear-gradient(90deg, rgba(10,60,150,0.06), rgba(60,160,255,0.06));
+      padding:6px 10px;
+      border-radius:999px;
+      align-self:flex-end;
+      transform:translateY(-6px);
+      box-shadow: 0 6px 18px rgba(6,48,90,0.05);
+    }
+
+    .grid{
+      display:grid;
+      gap:14px;
+    }
+    @media(min-width:840px){ .grid{ grid-template-columns: 1fr 340px; align-items:start; } }
+
+    .card{
+      position:relative;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,253,255,0.85));
+      border-radius: var(--radius);
+      padding:16px;
+      box-sizing:border-box;
+      box-shadow: 0 10px 30px rgba(9,30,66,0.08);
+      border: 1px solid rgba(8,28,56,0.04);
+      overflow:visible;
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      right:14px;
+      top:12px;
+      width:60px;
+      height:60px;
+      background: radial-gradient(circle at 30% 30%, rgba(62,160,255,0.12), rgba(6,48,90,0.03));
+      border-radius:50%;
+      filter: blur(14px);
+      pointer-events:none;
+    }
+
+    .label{ color:var(--muted); font-size:13px; margin-bottom:8px; }
+    .big{ font-size: clamp(22px, 4.6vw, 44px); font-weight:600; font-variant-numeric: tabular-nums; }
+
+    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .btn{
+      border: none;
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:600;
+      min-width:120px;
+      box-shadow: 0 8px 22px rgba(6,48,90,0.08);
+    }
+    .btn-primary{
+      background: linear-gradient(90deg,#2b8cff 0%, #053c85 100%);
+      color:#fff;
+    }
+    .btn-ghost{
+      background: rgba(5,48,90,0.04);
+      color: #053c85;
+    }
+    @media(max-width:420px){
+      .btn{ width:100%; }
+      .actions{ width:100%; }
+    }
+
+    .bar-outer{ width:100%; height:18px; border-radius:999px; background:rgba(6,48,90,0.05); overflow:hidden; margin-top:12px; }
+    /* bar-inner color will change via classes */
+    .bar-inner{ height:100%; width:0%; transition: width .6s ease, background .3s ease; }
+
+    .bar-small{ background: linear-gradient(90deg, var(--green) 0%, var(--green) 100%); }
+    .bar-mid{ background: linear-gradient(90deg, var(--green) 0%, var(--yellow) 100%); }
+    .bar-large{ background: linear-gradient(90deg, var(--yellow) 0%, var(--red) 100%); }
+
+    .muted-block{ font-size:14px; color:var(--muted); line-height:1.6; }
+    .small-foot{ font-size:12px; color:var(--muted); text-align:center; margin-top:8px; opacity:0.95; }
+
+    .coin{
+      width:36px; height:36px; border-radius:50%;
+      display:inline-grid; place-items:center;
+      background: linear-gradient(180deg,#fff5e6,#fff0c2);
+      border: 1px solid rgba(6,48,90,0.06);
+      box-shadow: 0 6px 18px rgba(6,48,90,0.06);
+      color:#b97f00; font-weight:700;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true">
+    <svg viewBox="0 0 1200 360" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#66b0ff"/><stop offset="1" stop-color="#063069"/></linearGradient>
+      </defs>
+      <ellipse cx="600" cy="120" rx="420" ry="80" fill="url(#g1)" opacity="0.65"/>
+    </svg>
+  </div>
+
+  <div class="wrap">
+    <div class="title-wrap">
+      <div class="coin" aria-hidden="true">zł</div>
+      <h1 class="title">Kieszonkowe NaCzas</h1>
+      <div class="title-badge">co tydzień • 30 zł</div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Odliczanie do początku następnego tygodnia</div>
+        <div id="countdown" class="big">--d : --h : --m : --s</div>
+        <div style="text-align:right; margin-top:8px; color:var(--muted);" id="nextWeekLabel">następny pon. --:--</div>
+
+        <hr style="border:none; border-top:1px solid rgba(6,48,90,0.04); margin:14px 0;">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+          <div>
+            <div class="label">Saldo (ile jest należne)</div>
+            <div id="balance" class="big">0,00 zł</div>
+          </div>
+
+          <div style="min-width:180px; display:flex; flex-direction:column; gap:8px;">
+            <div class="actions">
+              <button id="payBtn" class="btn btn-primary">Dałem kieszonkowe</button>
+            </div>
+            <div id="status" style="font-size:13px; color:var(--muted);"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;">
+          <div class="bar-outer"><div id="debtBar" class="bar-inner bar-small"></div></div>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div class="label">Szybkie</div>
+          <div class="muted-block">
+            • Tydzień zaczyna się w poniedziałek 00:00.<br>
+            • Co tydzień doliczamy 30 zł, jeśli minął tydzień.<br>
+            • Kliknij "Dałem kieszonkowe" i wpisz kwotę — saldo się zaktualizuje.
+          </div>
+        </div>
+
+        <div class="small-foot">Dane zapisane lokalnie w przeglądarce • tło: grid.png</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "kieszonkowe_na_czas_v4";
+    const WEEKLY = 30;
+
+    function startOfWeek(d){
+      const date = new Date(d);
+      const shift = (date.getDay() + 6) % 7;
+      date.setHours(0,0,0,0);
+      date.setDate(date.getDate() - shift);
+      return date;
+    }
+    function nextWeekStart(d){
+      const s = startOfWeek(d);
+      const n = new Date(s); n.setDate(s.getDate() + 7); n.setHours(0,0,0,0); return n;
+    }
+    function weeksBetween(a,b){
+      const sa = startOfWeek(new Date(a));
+      const sb = startOfWeek(new Date(b));
+      return Math.floor((sb - sa) / (7*24*60*60*1000));
+    }
+    function formatPLN(n){ return Number(n).toLocaleString("pl-PL", { style:"currency", currency:"PLN" }); }
+
+    function getState(){ try{ const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; } catch(e){ return null; } }
+    function saveState(s){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+
+    function initState(){
+      const now = new Date();
+      let s = getState();
+      if(!s){
+        const monday = startOfWeek(now);
+        s = { lastMon: monday.toISOString().slice(0,10), balance: WEEKLY, history:[{t:Date.now(),type:"init",added:WEEKLY}] };
+        saveState(s);
+      } else {
+        const lastMon = new Date(s.lastMon + "T00:00:00");
+        const elapsed = weeksBetween(lastMon, now);
+        if(elapsed > 0){
+          const added = elapsed * WEEKLY;
+          s.balance = Math.round((Number(s.balance) + added) * 100) / 100;
+          s.lastMon = startOfWeek(now).toISOString().slice(0,10);
+          s.history.push({t:Date.now(),type:"auto",weeks:elapsed,added});
+          saveState(s);
+        }
+      }
+      render();
+    }
+
+    function render(){
+      const s = getState() || {balance:0};
+      document.getElementById("balance").textContent = formatPLN(s.balance || 0);
+
+      const debt = Math.max(0, Number(s.balance || 0));
+      const pct = Math.min(100, (debt / 150) * 100);
+      const bar = document.getElementById("debtBar");
+      bar.style.width = pct + "%";
+
+      // logic for color thresholds:
+      // <=30 => green (bar-small)
+      // 31-90 => green->yellow (bar-mid)
+      // >90 => yellow->red (bar-large)
+      bar.classList.remove("bar-small","bar-mid","bar-large");
+      if(debt <= 30) bar.classList.add("bar-small");
+      else if(debt <= 90) bar.classList.add("bar-mid");
+      else bar.classList.add("bar-large");
+
+      const last = (s.history && s.history[s.history.length-1]) || null;
+      const st = document.getElementById("status");
+      if(!last) st.textContent = "";
+      else if(last.type === "pay") st.textContent = `Ostatnia płatność: ${formatPLN(last.amount)} — ${last.label || ""}`;
+      else if(last.type === "auto") st.textContent = `Dodano automatycznie: ${formatPLN(last.added)}.`;
+      else if(last.type === "init") st.textContent = `Inicjalne naliczenie: ${formatPLN(last.added)}.`;
+      else st.textContent = "";
+    }
+
+    function tick(){
+      const now = new Date();
+      const next = nextWeekStart(now);
+      const diff = Math.max(0, next - now);
+      const d = Math.floor(diff / (24*60*60*1000));
+      const h = Math.floor((diff % (24*60*60*1000)) / (60*60*1000));
+      const m = Math.floor((diff % (60*60*1000)) / (60*1000));
+      const s = Math.floor((diff % (60*1000)) / 1000);
+      const pad = n => String(n).padStart(2,"0");
+      document.getElementById("countdown").textContent = `${pad(d)}d : ${pad(h)}h : ${pad(m)}m : ${pad(s)}s`;
+      document.getElementById("nextWeekLabel").textContent = `następny pon. ${String(next.getHours()).padStart(2,"0")}:${String(next.getMinutes()).padStart(2,"0")}`;
+    }
+
+    document.getElementById("payBtn").addEventListener("click", () => {
+      const raw = prompt("Ile zł przekazałeś/przekazałaś? (np. 30)");
+      if(raw === null) return;
+      const amount = Number(String(raw).replace(",","."));
+      if(Number.isNaN(amount) || amount <= 0){ alert("Podaj dodatnią kwotę, np. 30"); return; }
+      const s = getState() || {balance:0, history:[]};
+      const before = Number(s.balance || 0);
+      s.balance = Math.round((before - amount) * 100) / 100;
+      let label = "";
+      if(amount < before) label = "za mało";
+      else if(Math.abs(amount - before) < 0.005) label = "idealnie";
+      else label = "nadpłata";
+      s.history.push({t:Date.now(), type:"pay", amount, label});
+      saveState(s);
+      render();
+    });
+
+    initState();
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
